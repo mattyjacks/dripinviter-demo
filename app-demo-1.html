@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DripInviter - Campaign Manager</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4a148c;
+            --secondary-color: #e91e63;
+            --background-dark: #1a1a1a;
+            --text-light: #ffffff;
+            --text-gray: #cccccc;
+            --success-color: #4CAF50;
+            --warning-color: #ff9800;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            background: var(--background-dark);
+            color: var(--text-light);
+            min-height: 100vh;
+        }
+
+        .app-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            padding: 2rem;
+            text-align: center;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .steps-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .step-indicator {
+            flex: 1;
+            text-align: center;
+            padding: 1rem;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .step-indicator.active {
+            color: var(--secondary-color);
+        }
+
+        .step-indicator::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--text-gray);
+            opacity: 0.3;
+        }
+
+        .step-indicator.active::after {
+            background: var(--secondary-color);
+            opacity: 1;
+        }
+
+        .step-content {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 2rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            display: none;
+        }
+
+        .step-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .upload-area {
+            border: 2px dashed var(--text-gray);
+            padding: 2rem;
+            text-align: center;
+            border-radius: 10px;
+            margin: 1rem 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .upload-area:hover {
+            border-color: var(--secondary-color);
+            background: rgba(233, 30, 99, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-gray);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.8rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+            color: var(--text-light);
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.8rem 1.5rem;
+            background: var(--secondary-color);
+            color: var(--text-light);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(233, 30, 99, 0.2);
+        }
+
+        .btn-next {
+            float: right;
+        }
+
+        .btn-prev {
+            float: left;
+            background: transparent;
+            border: 1px solid var(--text-gray);
+        }
+
+        .progress-bar {
+            height: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            margin: 1rem 0;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: var(--secondary-color);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .status-message {
+            padding: 1rem;
+            border-radius: 5px;
+            margin: 1rem 0;
+            display: none;
+        }
+
+        .status-message.success {
+            background: rgba(76, 175, 80, 0.1);
+            color: var(--success-color);
+            display: block;
+        }
+
+        .status-message.warning {
+            background: rgba(255, 152, 0, 0.1);
+            color: var(--warning-color);
+            display: block;
+        }
+
+        /* Navigation styles */
+        .nav-dashboard {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-brand {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--text-light);
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .nav-link {
+            color: var(--text-gray);
+            text-decoration: none;
+            transition: color 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-link:hover {
+            color: var(--secondary-color);
+        }
+
+        /* Confirmation page styles */
+        .confirmation-page {
+            text-align: center;
+            padding: 3rem;
+            display: none;
+        }
+
+        .confirmation-page.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .celebration-icon {
+            font-size: 4rem;
+            margin-bottom: 2rem;
+            color: var(--success-color);
+        }
+
+        .confirmation-title {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .confirmation-message {
+            color: var(--text-gray);
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1.5rem;
+            border-radius: 10px;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--secondary-color);
+        }
+
+        .stat-label {
+            color: var(--text-gray);
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .app-container {
+                padding: 1rem;
+            }
+
+            .steps-container {
+                flex-direction: column;
+            }
+
+            .step-indicator {
+                margin-bottom: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <nav class="nav-dashboard">
+            <a href="#" class="nav-brand">DripInviter</a>
+            <div class="nav-links">
+                <a href="#" class="nav-link">
+                    <i class="fas fa-home"></i>
+                    Dashboard
+                </a>
+                <a href="#" class="nav-link">
+                    <i class="fas fa-chart-line"></i>
+                    Analytics
+                </a>
+                <a href="#" class="nav-link">
+                    <i class="fas fa-cog"></i>
+                    Settings
+                </a>
+                <a href="#" class="nav-link">
+                    <i class="fas fa-credit-card"></i>
+                    Billing
+                </a>
+                <a href="#" class="nav-link">
+                    <i class="fas fa-user"></i>
+                    Account
+                </a>
+            </div>
+        </nav>
+
+        <header>
+            <h1>DripInviter Campaign Manager</h1>
+            <p>Create and manage your webinar campaigns in three simple steps</p>
+        </header>
+
+        <div class="steps-container">
+            <div class="step-indicator active" data-step="1">
+                <h3>Upload Contacts</h3>
+            </div>
+            <div class="step-indicator" data-step="2">
+                <h3>Webinar Setup</h3>
+            </div>
+            <div class="step-indicator" data-step="3">
+                <h3>Campaign Settings</h3>
+            </div>
+        </div>
+
+        <div class="step-content active" id="step1">
+            <h2>Upload Your Contact List</h2>
+            <p>Drag and drop your contact list file or click to select</p>
+            
+            <div class="upload-area" id="uploadArea">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <p>Drop your CSV file here or click to browse</p>
+                <input type="file" id="fileUpload" accept=".csv" style="display: none;">
+            </div>
+
+            <div class="progress-bar">
+                <div class="progress-bar-fill"></div>
+            </div>
+
+            <div class="status-message" id="uploadStatus"></div>
+
+            <button class="btn btn-next" onclick="nextStep(1)">Next Step</button>
+        </div>
+
+        <div class="step-content" id="step2">
+            <h2>Set Up Your Webinar</h2>
+            
+            <div class="form-group">
+                <label for="webinarTitle">Webinar Title</label>
+                <input type="text" id="webinarTitle" class="form-control" placeholder="Enter your webinar title">
+            </div>
+
+            <div class="form-group">
+                <label for="webinarDescription">Description</label>
+                <textarea id="webinarDescription" class="form-control" rows="4" placeholder="Enter webinar description"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="webinarUrl">Webinar URL</label>
+                <input type="url" id="webinarUrl" class="form-control" placeholder="Enter your WebinarKit URL">
+            </div>
+
+            <button class="btn btn-prev" onclick="prevStep(2)">Previous</button>
+            <button class="btn btn-next" onclick="nextStep(2)">Next Step</button>
+        </div>
+
+        <div class="step-content" id="step3">
+            <h2>Campaign Settings</h2>
+            
+            <div class="form-group">
+                <label for="invitesPerDay">Invites per Day</label>
+                <input type="number" id="invitesPerDay" class="form-control" min="1" value="50" onchange="updateInviteCalculations('daily')">
+            </div>
+
+            <div class="form-group">
+                <label for="totalInvites">Total Invites</label>
+                <input type="number" id="totalInvites" class="form-control" min="1" value="350" onchange="updateInviteCalculations('total')">
+            </div>
+
+            <div class="form-group">
+                <label for="campaignDuration">Campaign Duration (days)</label>
+                <input type="number" id="campaignDuration" class="form-control" min="1" value="7" onchange="updateInviteCalculations('duration')">
+            </div>
+
+            <div class="form-group">
+                <label for="startDate">Start Date</label>
+                <input type="date" id="startDate" class="form-control" required>
+            </div>
+
+            <button class="btn btn-prev" onclick="prevStep(3)">Previous</button>
+            <button class="btn" onclick="startCampaign()">Start Campaign</button>
+        </div>
+
+        <div class="confirmation-page" id="confirmationPage">
+            <div class="celebration-icon">🎉</div>
+            <h2 class="confirmation-title">Campaign Successfully Launched!</h2>
+            <p class="confirmation-message">
+                Congratulations! Your campaign is now live and ready to make waves. 
+                We're excited to help you connect with your audience in a meaningful way.
+            </p>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" id="recipientCount">0</div>
+                    <div class="stat-label">Recipients</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">100%</div>
+                    <div class="stat-label">Setup Complete</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="estimatedTime">0</div>
+                    <div class="stat-label">Est. Completion Time</div>
+                </div>
+            </div>
+
+            <button class="btn" onclick="startNewCampaign()">
+                <i class="fas fa-plus"></i>
+                Create New Campaign
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Initialize date input with tomorrow's date
+        document.addEventListener('DOMContentLoaded', function() {
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            const formattedDate = tomorrow.toISOString().split('T')[0];
+            document.getElementById('startDate').value = formattedDate;
+            
+            // Initialize calculations
+            updateInviteCalculations('daily');
+        });
+
+        // Step navigation
+        function nextStep(currentStep) {
+            if (currentStep < 3) {
+                document.querySelector(`#step${currentStep}`).classList.remove('active');
+                document.querySelector(`#step${currentStep + 1}`).classList.add('active');
+                
+                document.querySelector(`[data-step="${currentStep}"]`).classList.remove('active');
+                document.querySelector(`[data-step="${currentStep + 1}"]`).classList.add('active');
+            }
+        }
+
+        function prevStep(currentStep) {
+            if (currentStep > 1) {
+                document.querySelector(`#step${currentStep}`).classList.remove('active');
+                document.querySelector(`#step${currentStep - 1}`).classList.add('active');
+                
+                document.querySelector(`[data-step="${currentStep}"]`).classList.remove('active');
+                document.querySelector(`[data-step="${currentStep - 1}"]`).classList.add('active');
+            }
+        }
+
+        // File upload handling
+        const uploadArea = document.getElementById('uploadArea');
+        const fileUpload = document.getElementById('fileUpload');
+        const progressBar = document.querySelector('.progress-bar-fill');
+        const uploadStatus = document.getElementById('uploadStatus');
+
+        uploadArea.addEventListener('click', () => fileUpload.click());
+
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.style.borderColor = '#e91e63';
+            uploadArea.style.background = 'rgba(233, 30, 99, 0.1)';
+        });
+
+        uploadArea.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            uploadArea.style.borderColor = '';
+            uploadArea.style.background = '';
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            const files = e.dataTransfer.files;
+            handleFiles(files);
+        });
+
+        fileUpload.addEventListener('change', (e) => {
+            handleFiles(e.target.files);
+        });
+
+        function handleFiles(files) {
+            if (files.length > 0) {
+                const file = files[0];
+                if (file.type === 'text/csv' || file.name.endsWith('.csv')) {
+                    simulateUpload(file);
+                } else {
+                    uploadStatus.textContent = 'Please upload a CSV file';
+                    uploadStatus.className = 'status-message warning';
+                }
+            }
+        }
+
+        function simulateUpload(file) {
+            let progress = 0;
+            uploadStatus.textContent = 'Uploading...';
+            uploadStatus.className = 'status-message';
+            progressBar.style.width = '0%';
+
+            const interval = setInterval(() => {
+                progress += 5;
+                progressBar.style.width = `${progress}%`;
+
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    uploadStatus.textContent = 'Upload complete! File: ' + file.name;
+                    uploadStatus.className = 'status-message success';
+                    setTimeout(() => nextStep(1), 1000);
+                }
+            }, 100);
+        }
+
+        function startCampaign() {
+            // Hide all step content
+            document.querySelectorAll('.step-content').forEach(step => {
+                step.classList.remove('active');
+            });
+
+            // Show confirmation page
+            const confirmationPage = document.getElementById('confirmationPage');
+            confirmationPage.classList.add('active');
+
+            // Update stats with actual data
+            const fileUpload = document.getElementById('fileUpload');
+            const recipientCount = fileUpload.files[0] ? fileUpload.files[0].size / 50 : 100; // Rough estimate
+            document.getElementById('recipientCount').textContent = Math.floor(recipientCount);
+            
+            // Calculate estimated time (just for display)
+            const estimatedHours = Math.ceil(recipientCount / 100);
+            document.getElementById('estimatedTime').textContent = estimatedHours + 'h';
+        }
+
+        function startNewCampaign() {
+            // Reset the form and show first step
+            document.querySelectorAll('.step-content').forEach((step, index) => {
+                step.classList.remove('active');
+                if (index === 0) step.classList.add('active');
+            });
+
+            // Hide confirmation page
+            document.getElementById('confirmationPage').classList.remove('active');
+
+            // Reset progress
+            document.querySelector('.progress-bar-fill').style.width = '0%';
+
+            // Reset file upload
+            document.getElementById('fileUpload').value = '';
+            
+            // Reset step indicators
+            document.querySelectorAll('.step-indicator').forEach((indicator, index) => {
+                indicator.classList.remove('active');
+                if (index === 0) indicator.classList.add('active');
+            });
+        }
+
+        function updateInviteCalculations(changedField) {
+            const invitesPerDayInput = document.getElementById('invitesPerDay');
+            const totalInvitesInput = document.getElementById('totalInvites');
+            const durationInput = document.getElementById('campaignDuration');
+            
+            // Get current values
+            let invitesPerDay = parseInt(invitesPerDayInput.value) || 0;
+            let totalInvites = parseInt(totalInvitesInput.value) || 0;
+            let duration = parseInt(durationInput.value) || 1;
+
+            // Update based on which field was changed
+            switch(changedField) {
+                case 'daily':
+                    totalInvites = invitesPerDay * duration;
+                    totalInvitesInput.value = totalInvites;
+                    break;
+                case 'total':
+                    invitesPerDay = Math.ceil(totalInvites / duration);
+                    invitesPerDayInput.value = invitesPerDay;
+                    break;
+                case 'duration':
+                    invitesPerDay = Math.ceil(totalInvites / duration);
+                    invitesPerDayInput.value = invitesPerDay;
+                    break;
+            }
+
+            // Add visual feedback
+            const changedInput = document.getElementById(
+                changedField === 'daily' ? 'invitesPerDay' : 
+                changedField === 'total' ? 'totalInvites' : 'campaignDuration'
+            );
+            
+            changedInput.style.transition = 'background-color 0.3s';
+            changedInput.style.backgroundColor = 'rgba(233, 30, 99, 0.1)';
+            setTimeout(() => {
+                changedInput.style.backgroundColor = '';
+            }, 500);
+        }
+    </script>
+</body>
+</html>
