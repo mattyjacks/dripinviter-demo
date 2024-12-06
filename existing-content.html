@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DripInviter - Webinar Campaign Platform</title>
+    <style>
+        :root {
+            --primary-color: #4a148c;
+            --secondary-color: #e91e63;
+            --background-dark: #1a1a1a;
+            --text-light: #ffffff;
+            --text-gray: #cccccc;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            background: var(--background-dark);
+            color: var(--text-light);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            padding: 4rem 0;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .steps-section {
+            padding: 4rem 0;
+        }
+
+        .step-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 2rem;
+            margin: 1rem 0;
+            transition: transform 0.3s ease;
+        }
+
+        .step-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            padding: 4rem 0;
+        }
+
+        .stat-card {
+            text-align: center;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            color: var(--secondary-color);
+            margin-bottom: 1rem;
+        }
+
+        .testimonial {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 2rem;
+            border-radius: 10px;
+            margin: 2rem 0;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 1rem 2rem;
+            background: var(--secondary-color);
+            color: var(--text-light);
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: transform 0.3s ease;
+        }
+
+        .cta-button:hover {
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>GENERATE HUNDREDS OF WEBINAR ATTENDEES</h1>
+            <p>WITH A WEBINAR DRIP INVITER CAMPAIGN</p>
+            <p>You've created an amazing Webinar for your prospects, now how do you get your target customer to watch it? With Drip Inviter campaigns silly!</p>
+        </div>
+    </header>
+
+    <section class="steps-section container">
+        <h2>HOW IT WORKS</h2>
+        <p>Running a Webinar Drip Invite Campaign is simple and effective, here's how it works!</p>
+
+        <div class="step-card">
+            <h3>STEP ONE: UPLOAD A CONTACT LIST</h3>
+            <p>If you already have a list of contacts you want to invite to your Webinar, you'll just need to upload it to your campaign! If you don't have a list of prospects, we can help you obtain one at a very low cost!</p>
+        </div>
+
+        <div class="step-card">
+            <h3>STEP TWO: SET UP YOUR WEBINAR</h3>
+            <p>Create a WebinarKit account and upload your webinar to their platform using the account settings we provide for you. Once your webinar landing page is set up and live, we can drip invite your contacts</p>
+        </div>
+
+        <div class="step-card">
+            <h3>STEP THREE: SEND DRIP INVITES</h3>
+            <p>We will automatically send hundreds of Webinar Invites to your list on autopilot each and everyday. This will allow you to pitch your product or services to your customers without needing to do live webinars every day!</p>
+        </div>
+
+        <a href="#" class="cta-button">Start a Campaign</a>
+    </section>
+
+    <section class="container">
+        <h2>DRIP CAMPAIGNS WORK</h2>
+        <p>Check out some of the stats from recent campaigns we are running on autopilot right now!</p>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number">13%</div>
+                <p>Invite to Webinar Attendance</p>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">500</div>
+                <p>Invites Sent per day per campaign</p>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">43%</div>
+                <p>Webinar to Booked Follow Up Call</p>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">17%</div>
+                <p>In Webinar Purchase Completion</p>
+            </div>
+        </div>
+
+        <a href="#" class="cta-button">Start a Campaign</a>
+    </section>
+
+    <section class="container">
+        <h2>RECENT REVIEWS OF DRIP INVITER</h2>
+        <p>Check out what some of our clients are saying about DripInviter!</p>
+
+        <div class="testimonial">
+            <p>"We started using Drip Inviter for platform demos and our attendance signup's skyrocketed without spending a penny on paid ads or marketing. DripInviter helped us build a list of people interested in running Influencer campaigns and sent them invites to our platform demo on autopilot. We've generated over $120k a week in new clients using DripInviter!"</p>
+            <p><strong>Giovanni A.</strong><br>Founder, Nichly.com</p>
+        </div>
+    </section>
+</body>
+</html>
